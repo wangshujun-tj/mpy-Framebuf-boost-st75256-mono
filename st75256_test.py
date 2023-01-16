@@ -3,21 +3,16 @@ from machine import Pin, I2C,SPI
 #iic=I2C(1) #用于pyb或者stm32
 iic=I2C(1,sda=Pin(33,Pin.PULL_UP),scl=Pin(32,Pin.PULL_UP), freq=400000)
 #spi=SPI(1, 20000000, sck=Pin(32), mosi=Pin(33), miso=Pin(34))
-#from ST75256_Mono import ST75256_I2C
-from ST75256_Gray import ST75256_I2C
+from ST75256_Mono import ST75256_I2C
 #from ST75256_Mono import ST75256_SPI
+#iic模式需要确保cs拉低，正常状态应该硬件拉低
 cs=Pin(26,Pin.OUT)
 cs(0)
-oled = ST75256_I2C(96, 256, iic, res=Pin(25), rot=0)
+oled = ST75256_I2C(256, 96, iic, res=Pin(25), rot=0)
 #oled = ST75256_SPI(256, 96, spi, res=Pin(25), cs=Pin(26), dc=Pin(27), rot=2)
 oled.contrast(255)#可用取值范围0-511，实际有用的区间大约在245-280区间，过小是全白，过大就是全黑
 oled.font_load("GB2312-32.fon")
 oled.invert(0)
-for i in range(96):
-    oled.fill(0)
-    for j in range(256):
-        oled.pixel(i,j,3)
-    oled.show()
 if 1:#改成0则跳过字体演示
     oled.fill(0)
     oled.font_set(0x22,0,1,0)
@@ -38,7 +33,7 @@ if 1:#改成0则跳过字体演示
     oled.font_set(0x41,0,1,0)
     oled.text("MicroPython 中文显示",0,52,3)
     oled.show()
-    time.sleep(30)
+    time.sleep(3)
     oled.fill(0)
     oled.font_set(0x12,0,1,0)
     oled.text("MicroPython 中文显示",0,0,1)
@@ -183,7 +178,7 @@ if 1:#速度测试
     oled.text("测试帧率%6.2f"%farme,0,36,1)
     oled.show()
     time.sleep(5)
-if 0:#图片显示演示
+if 1:#图片显示演示
     oled.fill(0)
     oled.font_set(0x22,0,1,0)
     oled.text("MicroPython中文显示",0,0,1)
